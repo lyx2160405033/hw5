@@ -1,0 +1,264 @@
+作业5源代码：
+1频域低通滤波器：设计低通滤波器包括 butterworth and Gaussian (选择合适的半径，计算功率谱比),平滑测试图像test1和2;分析各自优缺点；
+巴特沃斯滤波器：
+```
+f1=imread('test2.tif');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+[P,Q]=size(F);
+D0=25;
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=1/(1+(D(U,V)/D0)^(4));
+        G(U,V)=H(U,V)*F(U,V);
+    end
+end
+g=ifftshift(G);
+g=ifft2(g);
+g=uint8(real(g));
+figure(2);
+imshow(g);
+title('butterworth2阶低通滤波后');
+S0=0;S1=0;
+for U=1:P
+    for V=1:Q
+        L1=(abs(G(U,V)))^2;
+        S1=S1+L1;
+        L0=(abs(F(U,V)))^2;
+        S0=S0+L0;
+    end
+end
+L=S1/S0;
+figure(3);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(4);
+imshow(abs(H));
+title('滤波器');
+figure(5);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+高斯滤波器：
+```
+f1=imread('test2.tif');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+[P,Q]=size(F);
+D0=25;
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=exp(-D(U,V)^2/(2*D0^2));
+        G(U,V)=H(U,V)*F(U,V);
+    end
+end
+g=ifftshift(G);
+g=ifft2(g);
+g=uint8(real(g));
+figure(2);
+imshow(g);
+title('高斯低通滤波后');
+S0=0;S1=0;
+for U=1:P
+    for V=1:Q
+        L1=(abs(G(U,V)))^2;
+        S1=S1+L1;
+        L0=(abs(F(U,V)))^2;
+        S0=S0+L0;
+    end
+end
+L=S1/S0;
+figure(3);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(4);
+imshow(abs(H));
+title('滤波器');
+figure(5);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+2、频域高通滤波器：设计高通滤波器包括butterworth and Gaussian，在频域增强边缘。选择半径和计算功率谱比，测试图像test3,4：分析各自优缺点；
+巴特沃斯滤波器
+```
+f1=imread('test4 copy.bmp');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+[P,Q]=size(F);
+D0=25;
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=1/(1+(D0/D(U,V))^(2*2));
+        G(U,V)=H(U,V)*F(U,V);
+    end
+end
+g=ifftshift(G);
+g=ifft2(g);
+g=uint8(real(g));
+figure(2);
+imshow(g);
+title('butterworth2阶高通滤波后');
+S0=0;S1=0;
+for U=1:P
+    for V=1:Q
+        L1=(abs(G(U,V)))^2;
+        S1=S1+L1;
+        L0=(abs(F(U,V)))^2;
+        S0=S0+L0;
+    end
+end
+L=S1/S0;
+figure(3);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(4);
+imshow(abs(H));
+title('滤波器');
+figure(5);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+高斯滤波器
+```
+f1=imread('test4 copy.bmp');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+[P,Q]=size(F);
+D0=25;
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=1-exp(-D(U,V)^2/(2*D0^2));
+        G(U,V)=H(U,V)*F(U,V);
+    end
+end
+g=ifftshift(G);
+g=ifft2(g);
+g=uint8(real(g));
+figure(2);
+imshow(g);
+title('高斯低通滤波后');
+S0=0;S1=0;
+for U=1:P
+    for V=1:Q
+        L1=(abs(G(U,V)))^2;
+        S1=S1+L1;
+        L0=(abs(F(U,V)))^2;
+        S0=S0+L0;
+    end
+end
+L=S1/S0;
+figure(3);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(4);
+imshow(abs(H));
+title('滤波器');
+figure(5);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+3、其他高通滤波器：拉普拉斯和Unmask，对测试图像test3,4滤波；分析各自优缺点；
+拉普拉斯滤波
+```
+f1=imread('test4 copy.bmp');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+[P,Q]=size(F);
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=1+4*pi^2*D(U,V)^2;
+        F2(U,V)=H(U,V)*F(U,V);
+    end
+end
+f2=ifftshift(F2);
+f2=ifft2(f2);
+f2=uint8(real(f2));
+figure(2);
+imshow(f2);
+title('拉普拉斯图像');
+figure(7);
+imshow(abs(255.*F2./max(max(F2))));
+mf2=max(max(real(f2)));
+for U=1:P
+    for V=1:Q
+       g(U,V)=f(U,V)-f2(U,V)/mf2;
+    end
+end
+g=uint8(real(g));
+figure(3);
+imshow(g);
+title('拉普拉斯滤波后图像');
+figure(4);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(5);
+imshow(abs(255.*H./max(max(H))));
+title('滤波器');
+G=fft2(g);
+G=fftshift(G);
+figure(6);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+unmask滤波
+```
+f1=imread('test4 copy.bmp');
+figure(1);
+imshow(f1);
+title('原始图像');
+f=double(f1);
+F=fft2(f);
+F=fftshift(F);
+D0=25;
+[P,Q]=size(F);
+for U=1:P
+    for V=1:Q
+        D(U,V)=sqrt((U-fix(P/2))^2+(V-fix(Q/2))^2);
+        H(U,V)=1/(1+(D0/D(U,V))^(2*2));
+       G(U,V)=(1+1*H(U,V))*F(U,V);
+    end
+end
+g=ifftshift(G);
+g=ifft2(g);
+g=uint8(real(g));
+figure(2);
+imshow(g);
+title('unmask滤波后图像');
+figure(3);
+imshow(abs(255.*F./max(max(F))));
+title('原傅里叶谱');
+figure(5);
+imshow(abs(255.*H./max(max(H))));
+title('滤波器');
+G=fft2(g);
+G=fftshift(G);
+figure(6);
+imshow(abs(255.*G./max(max(G))));
+title('滤波后傅里叶谱');
+```
+
